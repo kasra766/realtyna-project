@@ -13,14 +13,10 @@ import {
 import { Label } from "@/components/ui/label";
 import { FormField } from "@/components/shared/text-field";
 import { useForm } from "react-hook-form";
+import type { UserInfo } from "@/services/types";
+import { useUserInfoAction } from "@/store/user-info-context/context.hook";
 
-interface userInfo {
-  id: number;
-  full_name: string;
-  email: string;
-  phone: string;
-}
-interface IProps extends Partial<userInfo> {
+interface IProps extends Partial<UserInfo> {
   children: React.ReactNode;
 }
 export function ModalForAddOrUpdateUserInfo({
@@ -30,8 +26,9 @@ export function ModalForAddOrUpdateUserInfo({
   phone = "",
   email = "",
 }: IProps) {
+  const { dispatch } = useUserInfoAction();
   const [open, setOpen] = useState(false);
-  const { control, handleSubmit } = useForm<Omit<userInfo, "id">>({
+  const { control, handleSubmit } = useForm<Omit<UserInfo, "id">>({
     defaultValues: {
       phone,
       email,
@@ -39,8 +36,11 @@ export function ModalForAddOrUpdateUserInfo({
     },
   });
 
-  function submitForm(data: Omit<userInfo, "id">) {
-    console.table(data);
+  function submitForm(data: Omit<UserInfo, "id">) {
+    console.table({ ...data, id });
+    if (!id) {
+      dispatch({ type: "addUser", payload: { ...data, id: "hello" } });
+    }
     setOpen(false);
   }
   return (
@@ -99,7 +99,7 @@ export function ModalForAddOrUpdateUserInfo({
                 name="phone"
                 type="tel"
                 className="col-span-3"
-                placeholder="123-456-789"
+                placeholder="123-456-7890"
                 rules={{
                   required: "phone is number is required",
                   pattern: {
