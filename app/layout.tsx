@@ -1,9 +1,11 @@
 import React from "react";
 import { Inter as FontSans } from "next/font/google";
 import type { Metadata } from "next";
+import { Toaster } from "@/components/ui/sonner";
+
+import { UserInfoProvider } from "@/store/user-info-context/provider";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
-import { UserInfoProvider } from "@/store/user-info-context/provider";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,6 +31,7 @@ export default function RootLayout({
         )}
       >
         <UserInfoProvider>{children}</UserInfoProvider>
+        <Toaster />
       </body>
     </html>
   );

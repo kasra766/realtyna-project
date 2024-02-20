@@ -1,20 +1,28 @@
 "use client";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { FormField } from "@/components/shared/text-field";
-import { useForm } from "react-hook-form";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+import {
+  useUserInfo,
+  useUserInfoAction,
+} from "@/store/user-info-context/context.hook";
+
+import { addUser, fetchUsers, updateUser } from "@/services/api";
+
 import type { UserInfo } from "@/services/types";
-import { useUserInfoAction } from "@/store/user-info-context/context.hook";
 
 interface IProps extends Partial<UserInfo> {
   children: React.ReactNode;
@@ -26,9 +34,10 @@ export function ModalForAddOrUpdateUserInfo({
   phone = "",
   email = "",
 }: IProps) {
-  const { dispatch } = useUserInfoAction();
+  const { rowSelection } = useUserInfo();
+  const { dispatch, setRowSelection } = useUserInfoAction();
   const [open, setOpen] = useState(false);
-  const { control, handleSubmit } = useForm<Omit<UserInfo, "id">>({
+  const { reset, control, handleSubmit } = useForm<Omit<UserInfo, "id">>({
     defaultValues: {
       phone,
       email,
@@ -36,22 +45,48 @@ export function ModalForAddOrUpdateUserInfo({
     },
   });
 
-  function submitForm(data: Omit<UserInfo, "id">) {
+  async function submitForm(data: Omit<UserInfo, "id">) {
     console.table({ ...data, id });
+
     if (!id) {
-      dispatch({ type: "addUser", payload: { ...data, id: "hello" } });
+      await addUser(JSON.stringify(data));
+      const fetchUsersInfo = await fetchUsers();
+      const parseUsersInfo = await fetchUsersInfo.json();
+
+      dispatch({
+        type: "setUsers",
+        payload: parseUsersInfo.data.usersInfo,
+      });
+      const newRowSelection = Object.entries(rowSelection).reduce(
+        (prev, [key]) => {
+          prev[Number(key) + 1] = true;
+          return prev;
+        },
+        {} as { [key: number]: boolean },
+      );
+
+      setRowSelection(newRowSelection);
+    } else {
+      await updateUser(JSON.stringify({ ...data, id }));
+      const fetchUsersInfo = await fetchUsers();
+      const parseUsersInfo = await fetchUsersInfo.json();
+      dispatch({
+        type: "setUsers",
+        payload: parseUsersInfo.data.usersInfo,
+      });
     }
+    reset();
     setOpen(false);
   }
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle className="first-letter:capitalize">
+    <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent className="sm:max-w-[425px]">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="first-letter:capitalize">
             {id ? "edit user info" : "add user"}
-          </DialogTitle>
-        </DialogHeader>
+          </AlertDialogTitle>
+        </AlertDialogHeader>
         <form onSubmit={handleSubmit(submitForm)}>
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
@@ -112,13 +147,14 @@ export function ModalForAddOrUpdateUserInfo({
               />
             </div>
           </div>
-          <DialogFooter>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <Button type="submit" className="first-letter:capitalize">
               submit
             </Button>
-          </DialogFooter>
+          </AlertDialogFooter>
         </form>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

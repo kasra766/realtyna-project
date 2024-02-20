@@ -49,7 +49,6 @@ export function DataTable() {
   const { users, rowSelection } = useUserInfo();
   const { setRowSelection } = useUserInfoAction();
 
-  console.log(rowSelection);
   const table = useReactTable({
     data: users,
     columns,

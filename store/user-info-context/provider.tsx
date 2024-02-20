@@ -3,10 +3,9 @@ import React, { useReducer } from "react";
 import { UserInfoActionContext, UserInfoContext } from "./context.hook";
 import { reducer } from "./reducer";
 import type { StateType } from "@/services/types";
-import { data } from "@/constants/data";
 
 const initialState: StateType = {
-  users: data,
+  users: [],
   selectedUser: [],
   rowSelection: {},
 };
