@@ -36,10 +36,7 @@ export function Dashboard() {
           </Button>
         </ModalForAddOrUpdateUserInfo>
 
-        <ModalForAddOrUpdateUserInfo
-          {...user}
-          key={user as unknown as React.Key}
-        >
+        <ModalForAddOrUpdateUserInfo {...user} key={user?.email}>
           <Button variant="outline" className="gap-2" disabled={!activeEdit}>
             <Pencil1Icon />
             Edit User

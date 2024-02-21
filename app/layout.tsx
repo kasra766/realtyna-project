@@ -3,7 +3,7 @@ import { Inter as FontSans } from "next/font/google";
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 
-import { UserInfoProvider } from "@/store/user-info-context/provider";
+import { UserInfoProvider } from "@/store/user-info-context";
 import { cn } from "@/lib/utils";
 import "@/styles/globals.css";
 
@@ -31,7 +31,7 @@ export default function RootLayout({
         )}
       >
         <UserInfoProvider>{children}</UserInfoProvider>
-        <Toaster />
+        <Toaster richColors />
       </body>
     </html>
   );

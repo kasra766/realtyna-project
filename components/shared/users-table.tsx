@@ -30,12 +30,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  useUserInfo,
-  useUserInfoAction,
-} from "@/store/user-info-context/context.hook";
+import { useUserInfo, useUserInfoAction } from "@/store/user-info-context";
 import { columns } from "@/components/shared/columns";
-import { SelectedUser } from "@/services/types";
 
 export function DataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);

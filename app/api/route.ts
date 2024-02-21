@@ -1,6 +1,7 @@
-import { data } from "@/constants/data";
 import { NextRequest } from "next/server";
 import { randomGenerator } from "@/lib/id-generator";
+import { data } from "@/constants/data";
+import type { UsersAndIds } from "@/services/types";
 
 const users = new Set(data);
 export async function GET() {
@@ -14,8 +15,19 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
-  users.add({ id: randomGenerator(), ...data });
-  return Response.json({ message: "user added" });
+  const usersList = Array.from(users);
+  const isUserExist = usersList.some(user => user.email === data.email);
+  if (isUserExist) {
+    return Response.json(
+      { message: "another user is exist with this email" },
+      { status: 400 },
+    );
+  }
+  usersList.unshift({ id: randomGenerator(), ...data });
+  users.clear();
+  usersList.forEach(user => users.add(user));
+
+  return Response.json({ message: "User added" });
 }
 
 export async function PUT(request: NextRequest) {
@@ -25,7 +37,7 @@ export async function PUT(request: NextRequest) {
   const usersList = Array.from(users);
   const indexOfUser = usersList.findIndex(user => user.id === id);
   if (indexOfUser === -1) {
-    return Response.json({ message: "user is not exist" }, { status: 400 });
+    return Response.json({ message: "User is not exist" }, { status: 400 });
   }
   const newUsersList = [
     ...usersList.slice(0, indexOfUser),
@@ -38,23 +50,46 @@ export async function PUT(request: NextRequest) {
     users.add(user);
   });
 
-  return Response.json({ message: "user info updated" }, { status: 200 });
+  return Response.json({ message: "User info updated" }, { status: 200 });
 }
 
 export async function DELETE(request: NextRequest) {
   const data = await request.json();
-  const { id } = data;
+  const ids: string[] = data.ids;
+
   const usersList = Array.from(users);
-  const indexOfUser = usersList.findIndex(user => user.id === id);
-  if (indexOfUser === -1) {
-    return Response.json({ message: "user is not exist" }, { status: 400 });
+
+  const usersThatNotBeDelete = usersList.reduce(
+    (prev, cur, index) => {
+      if (!ids.includes(cur.id)) {
+        prev.remainUsers.push(cur);
+      } else {
+        prev.foundIds.push(cur.id);
+      }
+      return prev;
+    },
+    { remainUsers: [], foundIds: [] } as UsersAndIds,
+  );
+  const { foundIds, remainUsers } = usersThatNotBeDelete;
+  const notFoundIds = ids.reduce((prev, cur) => {
+    if (!foundIds.includes(cur)) {
+      prev.push(cur);
+    }
+    return prev;
+  }, [] as string[]);
+  // const indexOfUser = usersList.findIndex(user => user.id === id);
+
+  if (notFoundIds.length > 0) {
+    return Response.json(
+      { message: `These users are not exist: ${JSON.stringify(notFoundIds)}` },
+      { status: 400 },
+    );
   }
 
-  usersList.splice(indexOfUser, 1);
   users.clear();
-  usersList.forEach(user => {
+  remainUsers.forEach(user => {
     users.add(user);
   });
 
-  return Response.json({ message: "user deleted" }, { status: 200 });
+  return Response.json({ message: "Users deleted" }, { status: 200 });
 }

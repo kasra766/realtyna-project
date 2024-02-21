@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,12 +11,16 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+import { ReloadIcon } from "@radix-ui/react-icons";
+import { useDeleteModal } from "@/hooks";
+
 interface IProps {
   children: React.ReactNode;
 }
 export function DialogForDelete({ children }: IProps) {
+  const { loading, submit, open, setOpen } = useDeleteModal();
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -26,12 +31,28 @@ export function DialogForDelete({ children }: IProps) {
         </DialogHeader>
 
         <DialogFooter>
-          <Button type="button" variant="outline">
+          <Button
+            onClick={() => setOpen(false)}
+            type="button"
+            variant="outline"
+          >
             Cancel
           </Button>
 
-          <Button type="button" className="bg-destructive">
-            Delete
+          <Button
+            onClick={submit}
+            type="button"
+            className="bg-destructive"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                Please wait
+              </>
+            ) : (
+              "Delete"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>

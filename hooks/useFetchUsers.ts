@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchUsers } from "@/services/api";
-import { useUserInfoAction } from "@/store/user-info-context/context.hook";
+import { useUserInfoAction } from "@/store/user-info-context";
 
 export function useFetchUsers() {
   const { dispatch } = useUserInfoAction();

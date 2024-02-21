@@ -18,3 +18,8 @@ export type ActionType =
   | { type: "setUsers"; payload: StateType["users"] }
   | { type: "selectedUser"; payload: StateType["selectedUser"] }
   | { type: "addUser"; payload: StateType["users"][number] };
+
+export interface UsersAndIds {
+  remainUsers: UserInfo[];
+  foundIds: string[];
+}
