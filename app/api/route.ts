@@ -46,13 +46,12 @@ export async function DELETE(request: NextRequest) {
   const data = await request.json();
   const emails: string[] = data.emails;
 
-  let error = false;
-  emails.forEach(email => {
-    if (error) return;
+  const error = emails.some(email => {
     if (usersMap.has(email)) {
       usersMap.delete(email);
+      return false;
     } else {
-      error = true;
+      return true;
     }
   });
 
