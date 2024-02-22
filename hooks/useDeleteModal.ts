@@ -13,17 +13,15 @@ export function useDeleteModal() {
   async function submit(
     setOpen: React.Dispatch<React.SetStateAction<boolean>>,
   ) {
-    const listOfEmail = Object.keys(rowSelection).reduce((prev, cur) => {
-      const email = users[Number(cur)].email;
-      prev.push(email);
+    const idsList = Object.keys(rowSelection).reduce((prev, cur) => {
+      const id = users[Number(cur)].id;
+      prev.push(id);
       return prev;
     }, [] as string[]);
 
     try {
       setLoading(true);
-      const resJson = await deleteUsers(
-        JSON.stringify({ emails: listOfEmail }),
-      );
+      const resJson = await deleteUsers(JSON.stringify({ ids: idsList }));
       const res = await resJson.json();
       if (resJson.status !== 200) {
         throw new Error(res.message);
