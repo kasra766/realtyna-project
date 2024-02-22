@@ -4,31 +4,31 @@ export const data: UserInfo[] = [
   {
     id: "m5gr84i9",
     full_name: "kasra",
-    phone: "12345678",
+    phone: "1234567882",
     email: "ken99@yahoo.com",
   },
   {
     id: "3u1reuv4",
     full_name: "amir",
-    phone: "98765432",
+    phone: "9876543278",
     email: "Abe45@gmail.com",
   },
   {
     id: "derv1ws0",
-    full_name: "ali",
-    phone: "741852963",
+    full_name: "nader",
+    phone: "74185296352",
     email: "Monserrat44@gmail.com",
   },
   {
     id: "5kma53ae",
     full_name: "sam",
-    phone: "753159684",
+    phone: "75315968496",
     email: "Silas22@gmail.com",
   },
   {
     id: "bhqecj4p",
     full_name: "iran",
-    phone: "862475319",
+    phone: "86247531978",
     email: "carmella@hotmail.com",
   },
 ];

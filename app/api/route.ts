@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
   const isUserExist = usersList.some(user => user.email === data.email);
   if (isUserExist) {
     return Response.json(
-      { message: "another user is exist with this email" },
+      { message: "Another user is exist with this email" },
       { status: 400 },
     );
   }
@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   users.clear();
   usersList.forEach(user => users.add(user));
 
-  return Response.json({ message: "User added" });
+  return Response.json({ message: "User Added" });
 }
 
 export async function PUT(request: NextRequest) {
@@ -91,5 +91,5 @@ export async function DELETE(request: NextRequest) {
     users.add(user);
   });
 
-  return Response.json({ message: "Users deleted" }, { status: 200 });
+  return Response.json({ message: "Users Deleted" }, { status: 200 });
 }

@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/table";
 import { useUserInfo, useUserInfoAction } from "@/store/user-info-context";
 import { columns } from "@/components/shared/columns";
+import { useFetchUsers } from "@/hooks";
 
 export function DataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
@@ -44,6 +45,9 @@ export function DataTable() {
 
   const { users, rowSelection } = useUserInfo();
   const { setRowSelection } = useUserInfoAction();
+
+  // fetch list of users
+  const loading = useFetchUsers();
 
   const table = useReactTable({
     data: users,
@@ -66,7 +70,7 @@ export function DataTable() {
 
   return (
     <div className="w-full">
-      <div className="flex items-center py-4">
+      <div className="flex items-center gap-2 py-4">
         <Input
           placeholder="Filter emails..."
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
@@ -143,7 +147,7 @@ export function DataTable() {
                   colSpan={columns.length}
                   className="h-24 text-center"
                 >
-                  No results.
+                  {loading ? "Loading..." : "No results."}
                 </TableCell>
               </TableRow>
             )}

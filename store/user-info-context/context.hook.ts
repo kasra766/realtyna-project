@@ -1,10 +1,6 @@
-import React, { createContext, useContext } from "react";
-import {
-  ActionType,
-  StateActions,
-  StateType,
-  UserInfo,
-} from "@/services/types";
+"use client";
+import { createContext, useContext } from "react";
+import { StateActions, StateType } from "@/services/types";
 
 export const UserInfoContext = createContext<StateType | null>(null);
 export const UserInfoActionContext = createContext<StateActions | null>(null);
