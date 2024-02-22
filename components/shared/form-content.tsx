@@ -55,7 +55,7 @@ export function FormContent(props: IProps) {
               required: { value: true, message: "Email is required" },
               pattern: {
                 value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g,
-                message: "email isn't valid",
+                message: "Email isn't valid",
               },
             }}
             control={control}
@@ -72,11 +72,11 @@ export function FormContent(props: IProps) {
             className="col-span-3"
             placeholder="09189202822"
             rules={{
-              required: "Phone is number is required",
+              required: "Phone number is required",
               pattern: {
                 value:
                   /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/g,
-                message: "phone number is not valid",
+                message: "Phone number is not valid",
               },
             }}
             control={control}
