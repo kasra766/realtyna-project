@@ -1,95 +1,67 @@
 import { NextRequest } from "next/server";
 import { randomGenerator } from "@/lib/id-generator";
-import { data } from "@/constants/data";
-import type { UsersAndIds } from "@/services/types";
+import { dataMap } from "@/constants/data";
+import type { UserInfo } from "@/services/types";
 
-const users = new Set(data);
+const usersMap: Map<string, UserInfo> = new Map(Object.entries(dataMap));
 export async function GET() {
-  const usersList = Array.from(users);
+  const usersMapList = Array.from(usersMap.values()).reverse();
   return Response.json({
     data: {
-      usersInfo: usersList,
+      usersInfo: usersMapList,
     },
   });
 }
 
 export async function POST(request: NextRequest) {
   const data = await request.json();
-  const usersList = Array.from(users);
-  const isUserExist = usersList.some(user => user.email === data.email);
+
+  const isUserExist = usersMap.has(data.email);
   if (isUserExist) {
     return Response.json(
-      { message: "Another user is exist with this email" },
+      { message: "Another user already exists with this email address" },
       { status: 400 },
     );
   }
-  usersList.unshift({ id: randomGenerator(), ...data });
-  users.clear();
-  usersList.forEach(user => users.add(user));
 
+  usersMap.set(data.email, { id: randomGenerator(), ...data });
   return Response.json({ message: "User Added" });
 }
 
 export async function PUT(request: NextRequest) {
   const data = await request.json();
-  const { id } = data;
+  const { email } = data;
 
-  const usersList = Array.from(users);
-  const indexOfUser = usersList.findIndex(user => user.id === id);
-  if (indexOfUser === -1) {
+  const isUserExist = usersMap.has(email);
+
+  if (!isUserExist) {
     return Response.json({ message: "User is not exist" }, { status: 400 });
   }
-  const newUsersList = [
-    ...usersList.slice(0, indexOfUser),
-    data,
-    ...usersList.slice(indexOfUser + 1),
-  ];
 
-  users.clear();
-  newUsersList.forEach(user => {
-    users.add(user);
-  });
-
+  usersMap.set(email, data);
   return Response.json({ message: "User info updated" }, { status: 200 });
 }
 
 export async function DELETE(request: NextRequest) {
   const data = await request.json();
-  const ids: string[] = data.ids;
+  const emails: string[] = data.emails;
 
-  const usersList = Array.from(users);
-
-  const usersThatNotBeDelete = usersList.reduce(
-    (prev, cur, index) => {
-      if (!ids.includes(cur.id)) {
-        prev.remainUsers.push(cur);
-      } else {
-        prev.foundIds.push(cur.id);
-      }
-      return prev;
-    },
-    { remainUsers: [], foundIds: [] } as UsersAndIds,
-  );
-  const { foundIds, remainUsers } = usersThatNotBeDelete;
-  const notFoundIds = ids.reduce((prev, cur) => {
-    if (!foundIds.includes(cur)) {
-      prev.push(cur);
+  let error = false;
+  emails.forEach(email => {
+    if (error) return;
+    if (usersMap.has(email)) {
+      usersMap.delete(email);
+    } else {
+      error = true;
     }
-    return prev;
-  }, [] as string[]);
-  // const indexOfUser = usersList.findIndex(user => user.id === id);
+  });
 
-  if (notFoundIds.length > 0) {
+  if (error) {
     return Response.json(
-      { message: `These users are not exist: ${JSON.stringify(notFoundIds)}` },
+      { message: "Some users do not exist" },
       { status: 400 },
     );
   }
-
-  users.clear();
-  remainUsers.forEach(user => {
-    users.add(user);
-  });
 
   return Response.json({ message: "Users Deleted" }, { status: 200 });
 }

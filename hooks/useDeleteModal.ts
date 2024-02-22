@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 import { useUserInfo, useUserInfoAction } from "@/store/user-info-context";
@@ -6,21 +6,24 @@ import { useUserInfo, useUserInfoAction } from "@/store/user-info-context";
 import { deleteUsers, fetchUsers } from "@/services/api";
 
 export function useDeleteModal() {
-  const [open, setOpen] = useState(false);
   const { dispatch, setRowSelection } = useUserInfoAction();
   const { rowSelection, users } = useUserInfo();
   const [loading, setLoading] = useState(false);
 
-  async function submit() {
-    const listOfId = Object.keys(rowSelection).reduce((prev, cur) => {
-      const id = users[Number(cur)].id;
-      prev.push(id);
+  async function submit(
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  ) {
+    const listOfEmail = Object.keys(rowSelection).reduce((prev, cur) => {
+      const email = users[Number(cur)].email;
+      prev.push(email);
       return prev;
     }, [] as string[]);
 
     try {
       setLoading(true);
-      const resJson = await deleteUsers(JSON.stringify({ ids: listOfId }));
+      const resJson = await deleteUsers(
+        JSON.stringify({ emails: listOfEmail }),
+      );
       const res = await resJson.json();
       if (resJson.status !== 200) {
         throw new Error(res.message);
@@ -39,14 +42,12 @@ export function useDeleteModal() {
     } finally {
       setLoading(false);
     }
-    console.log(listOfId);
+
     setOpen(false);
   }
 
   return {
     submit,
-    open,
     loading,
-    setOpen,
   };
 }

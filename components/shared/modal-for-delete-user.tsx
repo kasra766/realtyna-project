@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -18,7 +18,8 @@ interface IProps {
   children: React.ReactNode;
 }
 export function DialogForDelete({ children }: IProps) {
-  const { loading, submit, open, setOpen } = useDeleteModal();
+  const [open, setOpen] = useState(false);
+  const { loading, submit } = useDeleteModal();
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -40,7 +41,7 @@ export function DialogForDelete({ children }: IProps) {
           </Button>
 
           <Button
-            onClick={submit}
+            onClick={() => submit(setOpen)}
             type="button"
             className="bg-destructive"
             disabled={loading}

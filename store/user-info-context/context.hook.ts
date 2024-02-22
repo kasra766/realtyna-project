@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext } from "react";
-import { StateActions, StateType } from "@/services/types";
+import type { StateActions, StateType } from "@/services/types";
 
 export const UserInfoContext = createContext<StateType | null>(null);
 export const UserInfoActionContext = createContext<StateActions | null>(null);

@@ -13,7 +13,7 @@ const fontSans = FontSans({
 });
 
 export const metadata: Metadata = {
-  title: "Users Employee",
+  title: "Users Information",
   description: "Realtyna Project",
 };
 
@@ -31,7 +31,7 @@ export default function RootLayout({
         )}
       >
         <UserInfoProvider>{children}</UserInfoProvider>
-        <Toaster richColors />
+        <Toaster richColors position="top-center" />
       </body>
     </html>
   );

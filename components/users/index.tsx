@@ -1,8 +1,10 @@
 import React from "react";
 import { DataTable } from "@/components/shared";
-import { DeleteUser, EditUser, AddUser } from "./components";
+import { AddUser } from "./add-user";
+import { EditUser } from "./edit-user";
+import { DeleteUser } from "./delete-user";
 
-export function Dashboard() {
+export function Users() {
   return (
     <>
       <div className="flex gap-2">

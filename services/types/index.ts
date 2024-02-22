@@ -4,9 +4,11 @@ type UserInfoKey = "id" | "full_name" | "email" | "phone";
 export type UserInfo = Record<UserInfoKey, string>;
 
 export type SelectedUser = { [key: number]: boolean };
-export interface StateType {
+export interface ReducerState {
   users: UserInfo[];
   selectedUser: SelectedUser;
+}
+export interface StateType extends ReducerState {
   rowSelection: {};
 }
 
@@ -16,8 +18,7 @@ export interface StateActions {
 }
 export type ActionType =
   | { type: "setUsers"; payload: StateType["users"] }
-  | { type: "selectedUser"; payload: StateType["selectedUser"] }
-  | { type: "addUser"; payload: StateType["users"][number] };
+  | { type: "selectedUser"; payload: StateType["selectedUser"] };
 
 export interface UsersAndIds {
   remainUsers: UserInfo[];
