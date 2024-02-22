@@ -15,11 +15,11 @@ interface IProps extends UserInfo {
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export function FormContent(props: IProps) {
-  const { setOpen, id, ...otherField } = props;
+  const { setOpen, ...otherField } = props;
 
   const { loading, submitForm, handleSubmit, control } = useHandleForm({
     setOpen,
-    props,
+    props: otherField,
   });
   return (
     <form onSubmit={handleSubmit(submitForm)}>

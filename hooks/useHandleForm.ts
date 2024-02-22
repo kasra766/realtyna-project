@@ -9,6 +9,7 @@ interface argType {
   props: UserInfo;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
+type DataType = Omit<UserInfo, "id">;
 export function useHandleForm(parameters: argType) {
   const { setOpen, props } = parameters;
   const { id, ...otherField } = props;
@@ -20,11 +21,22 @@ export function useHandleForm(parameters: argType) {
   });
   const addUserHandler = useAddUser(setLoading);
   const updateUserHandler = useUpdateUser(setLoading);
-  async function submitForm(data: Omit<UserInfo, "id">) {
+  async function submitForm(data: DataType) {
+    console.log(data);
+
+    const dataForApi = Object.entries(data).reduce(
+      (prev, cur) => {
+        const [key, value] = cur;
+        prev[key] = value.trim();
+        return prev;
+      },
+      {} as Record<string, string>,
+    );
+
     if (!id || id === "") {
-      await addUserHandler(data);
+      await addUserHandler(dataForApi as DataType);
     } else {
-      await updateUserHandler(data, id);
+      await updateUserHandler(dataForApi as DataType, id);
     }
     reset();
     setOpen(false);
