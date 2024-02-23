@@ -24,8 +24,8 @@ export function FormContent(props: IProps) {
   return (
     <form onSubmit={handleSubmit(submitForm)}>
       <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="full_name" className="text-right">
+        <div className="grid grid-cols-1 grid-rows-2 items-center justify-start gap-0.5">
+          <Label htmlFor="full_name" className="">
             Full Name
           </Label>
           <FormField
@@ -33,7 +33,7 @@ export function FormContent(props: IProps) {
             id="full_name"
             name="full_name"
             type="text"
-            className="col-span-3"
+            className=""
             placeholder="John Doe"
             rules={{
               required: { value: true, message: "This field is required" },
@@ -41,15 +41,12 @@ export function FormContent(props: IProps) {
             control={control}
           />
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="email" className="text-right">
-            Email
-          </Label>
+        <div className="grid grid-cols-1 grid-rows-2 items-center justify-start gap-0.5">
+          <Label htmlFor="email">Email</Label>
           <FormField
             id="email"
             name="email"
             type="email"
-            className="col-span-3"
             placeholder="yourEmail@yahoo.com"
             rules={{
               required: { value: true, message: "Email is required" },
@@ -61,15 +58,12 @@ export function FormContent(props: IProps) {
             control={control}
           />
         </div>
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="phone" className="text-right">
-            Phone
-          </Label>
+        <div className="grid grid-cols-1 grid-rows-2 items-center justify-start gap-0.5">
+          <Label htmlFor="phone">Phone</Label>
           <FormField
             id="phone"
             name="phone"
             type="tel"
-            className="col-span-3"
             placeholder="09189202822"
             rules={{
               required: "Phone number is required",
